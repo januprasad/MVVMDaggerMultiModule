@@ -9,11 +9,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.mvvm_dagger_complex.Libs
 import com.example.mvvm_dagger_complex.MVVMApplication
 import com.example.mvvm_dagger_complex.data.Article
 import com.example.mvvm_dagger_complex.databinding.ActivityTopHeadlineBinding
 import com.example.mvvm_dagger_complex.di.component.DaggerActivityComponent
 import com.example.mvvm_dagger_complex.di.module.ActivityModule
+import com.example.mvvm_dagger_complex.di.module.LibsModule
 import com.example.mvvm_dagger_complex.ui.base.UiState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,6 +28,9 @@ class TopHeadlineActivity : AppCompatActivity() {
     @Inject
     lateinit var adapter: TopHeadlineAdapter
 
+    @Inject
+    lateinit var libs: Libs
+
     private lateinit var binding: ActivityTopHeadlineBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +40,7 @@ class TopHeadlineActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupUI()
         setupObserver()
+        libs.test()
     }
 
     private fun setupUI() {
@@ -83,7 +89,9 @@ class TopHeadlineActivity : AppCompatActivity() {
     private fun injectDependencies() {
         DaggerActivityComponent.builder()
             .applicationComponent((application as MVVMApplication).applicationComponent)
-            .activityModule(ActivityModule(this)).build().inject(this)
+            .activityModule(ActivityModule(this))
+            .libsModule(LibsModule(this))
+            .build().inject(this)
     }
 
 }
